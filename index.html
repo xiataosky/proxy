@@ -16,7 +16,7 @@
     <header>
       <div class="container">
         <h1>Socks5</h1>
-        <h2>A full-fledged performance socks5 proxy server written in C#. Plugin support included.</h2>
+        <h2>A full-fledged high-performance Socks5 proxy server written in C# with plugin support.</h2>
 
         <section id="downloads">
           <a href="https://github.com/ThrDev/Socks5/zipball/master" class="btn">Download as .zip</a>
@@ -29,28 +29,28 @@
     <div class="container">
       <section id="main_content">
         <h1>
-<a id="socks5" class="anchor" href="#socks5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Socks5</h1>
-
-<p>A full-fledged high-performance Socks5 proxy server written in C#. Plugin support included.</p>
-
-<p>-- Plugin Instructions --</p>
+<a id="plugin-information" class="anchor" href="#plugin-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plugin Information</h1>
 
 <p>With plugins, you can currently do the following:</p>
 
 <ul>
-<li>Handle connections to the Socks5 server and block by IP.</li>
-<li>Override sockets completely to be able to send/receive raw data after socks5 handles connection.</li>
-<li>Handle/Require a login for the Socks5 proxy.</li>
-<li>Handle/Modify incoming and outgoing data.</li>
-<li>Handle/Modify incoming connections, and rewrite them to different domains/addresses &amp; ports.</li>
+<li>Handle connections to the socks5 server and block by IP.</li>
+<li>Handle/require a login for the Socks5 proxy.</li>
+<li>Handle/modify incoming and outgoing data.</li>
+<li>Handle/modify incoming connections, and rewrite them to different domains/addresses &amp; ports.</li>
+<li>Handle raw socket connections and override them.</li>
 </ul>
 
-<p>More plugins are planned to be added on later.</p>
-
-<p>-- Included in this Branch --</p>
+<h1>
+<a id="included-in-this-branch" class="anchor" href="#included-in-this-branch" aria-hidden="true"><span class="octicon octicon-link"></span></a>Included In This Branch</h1>
 
 <p>Socks5 and Socks5_Minimal.
 Socks5 Minimal is a socks5 server with no plugin support, and is a lot better performing as well as smaller in size.</p>
+
+<h1>
+<a id="security" class="anchor" href="#security" aria-hidden="true"><span class="octicon octicon-link"></span></a>Security</h1>
+
+<p>Built into the Socks5Client is a small encryption protocol that interfaces perfectly with the Socks5Server. This is exclusive between the client and server and uses a special authentication type for compatibility. The Socks5Client will prefer SocksEncrypt mode on connection but for reverse compatibility, it still has regular Socks5 support.</p>
       </section>
     </div>
 
