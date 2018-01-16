@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "socks5", "socks5\socks5.csproj", "{B1A31708-7AC8-44C9-BBB3-999BEBE1FA5B}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestNewSocks5Client", "..\..\..\Visual Studio 2013\Projects\TestNewSocks5\TestNewSocks5Client\TestNewSocks5Client.csproj", "{6467E57C-E701-4472-9562-4A3B6F5FF4ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketEditor", "Socks5Projects\PacketEditor\PacketEditor\PacketEditor.csproj", "{E6B3F300-9B27-4A06-8141-1DCA11285BF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{46046C28-F16A-4FAF-B7CA-3536209C9C23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{838E506D-EFE1-4B1E-B7F3-2302FAAD58A2} = {46046C28-F16A-4FAF-B7CA-3536209C9C23}
+		{394D5DAD-0337-4DA4-914C-F58B11740715} = {46046C28-F16A-4FAF-B7CA-3536209C9C23}
+		{6467E57C-E701-4472-9562-4A3B6F5FF4ED} = {46046C28-F16A-4FAF-B7CA-3536209C9C23}
+		{E6B3F300-9B27-4A06-8141-1DCA11285BF5} = {46046C28-F16A-4FAF-B7CA-3536209C9C23}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC598AF7-5142-4A1B-A970-E577195B9488}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Socks5Test\Socks5Test.csproj

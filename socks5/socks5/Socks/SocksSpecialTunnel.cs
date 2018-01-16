@@ -122,10 +122,10 @@ namespace socks5.Socks
                 Client.Client.Sock.SendBufferSize = 4200;
                 foreach (DataHandler data in PluginLoader.LoadPlugin(typeof(DataHandler)))
                     Plugins.Push(data);
-                Client.Client.onDataReceived += Client_onDataReceived;
-                RemoteClient.onDataReceived += RemoteClient_onDataReceived;
-                RemoteClient.onClientDisconnected += RemoteClient_onClientDisconnected;
-                Client.Client.onClientDisconnected += Client_onClientDisconnected;
+                Client.Client.OnDataReceived += Client_onDataReceived;
+                RemoteClient.OnDataReceived += RemoteClient_onDataReceived;
+                RemoteClient.OnClientDisconnected += RemoteClient_onClientDisconnected;
+                Client.Client.OnClientDisconnected += Client_onClientDisconnected;
                 Client.Client.ReceiveAsync();
                 RemoteClient.ReceiveAsync();
             }

@@ -107,48 +107,39 @@ namespace socks5.Socks5Client
             //
             p = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Client = new Client(p, 4200);
-            Client.onClientDisconnected += Client_onClientDisconnected;
+            Client.OnClientDisconnected += Client_onClientDisconnected;
             Client.Sock.BeginConnect(new IPEndPoint(ipAddress, Port), new AsyncCallback(onConnected), Client);
             //return status?
         }
 
         void Client_onClientDisconnected(object sender, ClientEventArgs e)
         {
-            this.OnDisconnected(this, new Socks5ClientArgs(this, SocksError.Expired));
+            OnDisconnected(this, new Socks5ClientArgs(this, SocksError.Expired));
         }
 
         public bool Send(byte[] buffer, int offset, int length)
         {
-            try
+            //buffer sending.
+            int offst = 0;
+            while (true)
             {
-                //buffer sending.
-                int offst = 0;
-                while(true)
+                byte[] outputdata = enc.ProcessOutputData(buffer, offst, (length - offst > 4092 ? 4092 : length - offst));
+                offst += (length - offst > 4092 ? 4092 : length - offst);
+                //craft headers & shit.
+                //send outputdata's length firs.t
+                if (enc.GetAuthType() != AuthTypes.Login && enc.GetAuthType() != AuthTypes.None)
                 {
-                    byte[] outputdata = enc.ProcessOutputData(buffer, offst, (length - offst > 4092 ? 4092 : length - offst));
-                    offst += (length - offst > 4092 ? 4092 : length - offst);
-                    //craft headers & shit.
-                    //send outputdata's length firs.t
-                    if (enc.GetAuthType() != AuthTypes.Login && enc.GetAuthType() != AuthTypes.None)
-                    {
-                        byte[] datatosend = new byte[outputdata.Length + 4];
-                        Buffer.BlockCopy(outputdata, 0, datatosend, 4, outputdata.Length);
-                        Buffer.BlockCopy(BitConverter.GetBytes(outputdata.Length), 0, datatosend, 0, 4);
-                        outputdata = null;
-                        outputdata = datatosend;
-                    }
-                    Client.Send(outputdata, 0, outputdata.Length);
-                    if (offst >= buffer.Length)
-                    {
-                        //exit;
-                        return true;
-                    }
+                    byte[] datatosend = new byte[outputdata.Length + 4];
+                    Buffer.BlockCopy(outputdata, 0, datatosend, 4, outputdata.Length);
+                    Buffer.BlockCopy(BitConverter.GetBytes(outputdata.Length), 0, datatosend, 0, 4);
+                    outputdata = datatosend;
                 }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                Client.Send(outputdata, 0, outputdata.Length);
+                if (offst >= buffer.Length)
+                {
+                    //exit;
+                    return true;
+                }
             }
         }
 
@@ -267,7 +258,7 @@ namespace socks5.Socks5Client
                 //Client.onDataReceived += Client_onDataReceived;
                 if(Socks.DoSocksAuth(this, Username, Password))
                     if (Socks.SendRequest(Client, enc, Dest, Destport) == SocksError.Granted) {
-                        Client.onDataReceived += Client_onDataReceived;
+                        Client.OnDataReceived += Client_onDataReceived;
                         return true;
                     }
                 return false;
@@ -293,7 +284,7 @@ namespace socks5.Socks5Client
             if (Socks.DoSocksAuth(this, Username, Password))
             {
                 SocksError p = Socks.SendRequest(Client, enc, Dest, Destport);
-                Client.onDataReceived += Client_onDataReceived;
+                Client.OnDataReceived += Client_onDataReceived;
                 this.OnConnected(this, new Socks5ClientArgs(this, p));
                 
             }
