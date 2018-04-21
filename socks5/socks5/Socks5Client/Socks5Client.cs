@@ -144,7 +144,6 @@ namespace socks5.Socks5Client
                         return true;
                     }
                 }
-                return true;
             }
             catch (Exception ex)
             {

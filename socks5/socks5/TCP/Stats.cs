@@ -25,12 +25,12 @@ namespace socks5.TCP
 {
     public class Stats
     {
-        BandwidthCounter sc;
-        BandwidthCounter rc;
+        //BandwidthCounter sc;
+        //BandwidthCounter rc;
         public Stats()
         {
-            sc = new BandwidthCounter();
-            rc = new BandwidthCounter();
+            //sc = new BandwidthCounter();
+            //rc = new BandwidthCounter();
         }
         public void AddClient()
         {
@@ -47,11 +47,11 @@ namespace socks5.TCP
         {
             if(typ != ByteType.Sent)
             {
-                rc.AddBytes((uint)bytes);
+                //rc.AddBytes((uint)bytes);
                 NetworkReceived += (ulong)bytes;
                 return;
             }
-            sc.AddBytes((uint)bytes);
+            //sc.AddBytes((uint)bytes);
             NetworkSent += (ulong)bytes;
         }
 
@@ -72,12 +72,11 @@ namespace socks5.TCP
         public ulong PacketsSent { get; private set; }
         public ulong PacketsReceived { get; private set; }
 
-        public ulong BytesReceivedPerSec { get { return rc.GetPerSecondNumeric(); } }
-        public ulong BytesSentPerSec { get { return sc.GetPerSecondNumeric(); } }
-        //per sec.
-        public string SBytesReceivedPerSec { get { return rc.GetPerSecond(); } }
-        public string SBytesSentPerSec { get { return sc.GetPerSecond(); }
-        }
+        //public ulong BytesReceivedPerSec { get { return rc.GetPerSecondNumeric(); } }
+        //public ulong BytesSentPerSec { get { return sc.GetPerSecondNumeric(); } }
+        ////per sec.
+        //public string SBytesReceivedPerSec { get { return rc.GetPerSecond(); } }
+        //public string SBytesSentPerSec { get { return sc.GetPerSecond(); } }
     }
     public enum PacketType
     {
