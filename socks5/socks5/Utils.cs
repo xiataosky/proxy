@@ -45,8 +45,17 @@ namespace socks5
                 if (netif[i].Name == IFName)
                 {
                     if (netif[i].GetIPProperties().UnicastAddresses.Count > 0)
-                        return netif[i].GetIPProperties().UnicastAddresses[0].Address;
-                    else return IPAddress.Any;
+                    {
+                        foreach (var ip in netif[i].GetIPProperties().UnicastAddresses)
+                        {
+                            if (!ip.Address.ToString().Contains(":"))
+                                return ip.Address;
+                        }
+                    }
+                    else
+                    {
+                        return IPAddress.Any;
+                    }
                 }
             }
             return IPAddress.Any;

@@ -44,21 +44,6 @@ namespace PacketEditor.Plugins
         public override void OnServerDataReceived(object sender, socks5.TCP.DataEventArgs e)
         {
             Utils.Add(new DataCapture.Data(e.Request, e.Buffer, e.Count, DataCapture.DataType.Received));
-            return;
-            //If it's an HTTP request, make sure to use chunked. Read until chunked or content-length.
-            if (Chunked.IsHTTP(e.Buffer) && Chunked.IsChunked(e.Buffer))
-            {
-                //Chunked c = new Chunked(e.Client.Sock, e.Buffer, e.Count);
-                //e.Buffer = c.ChunkedData;
-                //e.Count = c.ChunkedData.Length;
-                //Utils.Add(new DataCapture.Data(e.Request, c.ChunkedData, c.ChunkedData.Length, DataCapture.DataType.Received));
-                Utils.Add(new DataCapture.Data(e.Request, e.Buffer, e.Count, DataCapture.DataType.Received));
-            }
-            //Save data into sent data list.
-            else
-            {
-            
-            }  
         }
     }
 }

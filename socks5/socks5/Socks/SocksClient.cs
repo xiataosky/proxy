@@ -27,7 +27,7 @@ namespace socks5.Socks
 {
     public class SocksClient
     {
-        public event EventHandler<SocksClientEventArgs> onClientDisconnected = delegate { };
+        public event EventHandler<SocksClientEventArgs> OnClientDisconnected = delegate { };
 
         public Client Client;
         public int Authenticated { get; private set; }
@@ -35,21 +35,22 @@ namespace socks5.Socks
         {
             Client = cli;
         }
-        private SocksRequest req1;
-        public SocksRequest Destination { get { return req1; } }
-        public void Begin(IPAddress outboundInterface, int PacketSize, int Timeout)
+        private SocksRequest _requestClone;
+        public SocksRequest Destination => _requestClone;
+
+        public void Begin(IPAddress outboundInterface, int packetSize, int timeout)
         {
-            Client.onClientDisconnected += Client_onClientDisconnected;
-            List<AuthTypes> authtypes = Socks5.RequestAuth(this);
+            Client.OnClientDisconnected += Client_onClientDisconnected;
+            var authtypes = Socks5.RequestAuth(this);
             if (authtypes.Count <= 0)
             {
                 Client.Send(new byte[] { 0x00, 0xFF });
                 Client.Disconnect();
                 return;
             }
-            this.Authenticated = 0;
+            Authenticated = 0;
             SocksEncryption w = null;
-            List<object> lhandlers = PluginLoader.LoadPlugin(typeof(LoginHandler));
+            var lhandlers = PluginLoader.LoadPlugin(typeof(LoginHandler));
             //check out different auth types, none will have no authentication, the rest do.
             if (lhandlers.Count > 0 && (authtypes.Contains(AuthTypes.SocksBoth) || authtypes.Contains(AuthTypes.SocksEncrypt) || authtypes.Contains(AuthTypes.SocksCompress) || authtypes.Contains(AuthTypes.Login)))
             {
@@ -85,12 +86,12 @@ namespace socks5.Socks
                 {
                     //unsupported methods y0
                     Authenticated = 1;
-                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)HeaderTypes.Zero });
+                    Client.Send(new[] { (byte)HeaderTypes.Socks5, (byte)HeaderTypes.Zero });
                 }
                 else
                 {
                     //unsupported.
-                    Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
+                    Client.Send(new[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
                     Client.Disconnect();
                     return;
                 }
@@ -98,7 +99,7 @@ namespace socks5.Socks
             else
             {
                 //unsupported.
-                Client.Send(new byte[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
+                Client.Send(new[] { (byte)HeaderTypes.Socks5, (byte)AuthTypes.Unsupported });
                 Client.Disconnect();
                 return;
             }
@@ -109,10 +110,10 @@ namespace socks5.Socks
                 w.SetType(AuthTypes.Login);
                 SocksRequest req = Socks5.RequestTunnel(this, w);
                 if (req == null) { Client.Disconnect(); return; }
-                req1 = new SocksRequest(req.StreamType, req.Type, req.Address, req.Port);
+                _requestClone = new SocksRequest(req.StreamType, req.Type, req.Address, req.Port);
                 //call on plugins for connect callbacks.
                 foreach (ConnectHandler conn in PluginLoader.LoadPlugin(typeof(ConnectHandler)))
-					if (conn.OnConnect(req1) == false)
+					if (conn.OnConnect(_requestClone) == false)
 					{
 						req.Error = SocksError.Failure;
 						Client.Send(req.GetData(true));
@@ -120,16 +121,16 @@ namespace socks5.Socks
 						return;
 					}  
                 //Send Tunnel Data back.
-                SocksTunnel x = new SocksTunnel(this, req, req1, PacketSize, Timeout);
+                SocksTunnel x = new SocksTunnel(this, req, _requestClone, packetSize, timeout);
                 x.Open(outboundInterface);
             }
             else if (Authenticated == 2)
             {
                 SocksRequest req = Socks5.RequestTunnel(this, w);
                 if (req == null) { Client.Disconnect(); return; }
-                req1 = new SocksRequest(req.StreamType, req.Type, req.Address, req.Port);
+                _requestClone = new SocksRequest(req.StreamType, req.Type, req.Address, req.Port);
                 foreach (ConnectHandler conn in PluginLoader.LoadPlugin(typeof(ConnectHandler)))
-					if (conn.OnConnect(req1) == false)
+					if (conn.OnConnect(_requestClone) == false)
 					{
 						req.Error = SocksError.Failure;
 						Client.Send(req.GetData(true));
@@ -137,23 +138,22 @@ namespace socks5.Socks
 						return;
 					}  
                 //Send Tunnel Data back.
-                SocksSpecialTunnel x = new SocksSpecialTunnel(this, w, req, req1, PacketSize, Timeout);
+                SocksSpecialTunnel x = new SocksSpecialTunnel(this, w, req, _requestClone, packetSize, timeout);
                 x.Open(outboundInterface);
             }
         }
 
         void Client_onClientDisconnected(object sender, ClientEventArgs e)
         {
-            this.onClientDisconnected(this, new SocksClientEventArgs(this));
-            Client.onClientDisconnected -= Client_onClientDisconnected;
-            //added to clear up memory
+            OnClientDisconnected(this, new SocksClientEventArgs(this));
+            Client.OnClientDisconnected -= Client_onClientDisconnected;
         }
     }
     public class User
     {
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public IPEndPoint IP { get; private set; }
+        public string Username { get; }
+        public string Password { get; }
+        public IPEndPoint IP { get; }
         public User(string un, string pw, IPEndPoint ip)
         {
             Username = un;

@@ -213,3 +213,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/socks5/.vs/socks5/v15
+/socks5/Socks5Test

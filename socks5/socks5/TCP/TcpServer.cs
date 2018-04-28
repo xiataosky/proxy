@@ -28,14 +28,11 @@ namespace socks5.TCP
     public class TcpServer
     {
         private TcpListener p;
-        private bool accept = false;
+        private bool accept;
         public int PacketSize{get;set;}
 
         public event EventHandler<ClientEventArgs> onClientConnected = delegate { };
         public event EventHandler<ClientEventArgs> onClientDisconnected = delegate { };
-
-        //public event EventHandler<DataEventArgs> onDataReceived = delegate { };
-        //public event EventHandler<DataEventArgs> onDataSent = delegate { };
 
         public TcpServer(IPAddress ip, int port)
         {
@@ -51,7 +48,7 @@ namespace socks5.TCP
                 try
                 {
                     Task.Reset();
-                    p.BeginAcceptSocket(new AsyncCallback(AcceptClient), p);
+                    p.BeginAcceptSocket(AcceptClient, p);
                     Task.WaitOne();
                 }
                 catch { //error, most likely server shutdown.
@@ -67,9 +64,6 @@ namespace socks5.TCP
                 Socket x = px.EndAcceptSocket(res);
                 Task.Set();
                 Client f = new Client(x, PacketSize);
-                //f.onClientDisconnected += onClientDisconnected;
-                //f.onDataReceived += onDataReceived;
-                //f.onDataSent += onDataSent;
                 onClientConnected(this, new ClientEventArgs(f));
             }
             catch(Exception ex)
@@ -85,7 +79,7 @@ namespace socks5.TCP
             {
                 accept = true;
                 p.Start(10000);               
-                new Thread(new ThreadStart(AcceptConnections)).Start();
+                new Thread(AcceptConnections).Start();
             }
         }
 
